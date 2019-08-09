@@ -1,0 +1,97 @@
+@model NetworkManager.Models.DetailsViewModel
+<section class="content-header">
+    <h1>
+    Switch @Model.sw.name
+    </h1>
+    <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+    <li class="active">Switch @Model.sw.name</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+    <div class="col-xs-12">
+        <div class="box">
+        <div class="box-header">
+            <h3 class="box-title">Manage @Model.sw.name</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <table id="example1" class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>IPv4</th>
+                <th>Location</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                <td>@Html.DisplayFor(modelItem => @Model.sw.id)</td>
+                <td>@Html.DisplayFor(modelItem => @Model.sw.name)</td>
+                <td>@Html.DisplayFor(modelItem => @Model.sw.ipv4)</td>
+                <td>@Html.DisplayFor(modelItem => @Model.sw.location)</td>
+                <td><a href="/Switches/Update/@Model.sw.id">Update</a> | <a href="/Switches/Delete/@Model.sw.id" >Delete</td>
+                </tr>
+            </table>
+        </div>
+        <div class="box-header">
+            <h4 class="box-title">Ports:</h4>
+        </div>
+        <div class="box-body">
+            <table id="example2" class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>VLAN ID</th>
+                <th>VLAN Name</th>
+                <th>State</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+                @foreach (var port in Model.sw.ports.OrderBy(o=>o.name).ToList())
+                {
+                    <tr>
+                        <form class="form-horizontal" method="post" action="/Switches/UpdatePort">
+                        <td>@Html.DisplayFor(modelItem => port.name)</td>
+                        <td><input type="text" class="form-control" name="description" placeholder="@port.description"></td>
+                        <td>@Html.DisplayFor(modelItem => port.vlan)</td>
+                        <td>
+                            <select class="form-control" id="vlan" name="vlan">
+                                @foreach (KeyValuePair<int, string> vlan in Model.vlans) {
+                                    if (vlan.Key == port.vlan)
+                                    {
+                                        <option selected value="@vlan.Key">@vlan.Value</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@vlan.Key">@vlan.Value</option>
+                                    }
+                                }
+                            </select>
+                        </td>
+                        <td>@Html.DisplayFor(modelItem => port.state)</td>
+                        <td><button type="submit" class="btn btn-link">Apply</button></td>
+                        <input type="hidden" name="id" value="@port.id"/>
+                        </form>
+                    </tr>
+                }
+            </table>
+        </div>
+        <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+    </div>
+    <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
+   
+<!-- DataTables -->
+<script src="~/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="~/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>

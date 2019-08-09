@@ -1,0 +1,71 @@
+@model IEnumerable<NetworkManager.Models.SwitchModels>
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1>
+    Switches
+    </h1>
+</section>
+<!-- Main content -->
+<section class="content container-fluid">
+    <!-- Horizontal Form -->
+    <div class="box box-info">
+    <div class="box-header with-border">
+        <h3 class="box-title">Add Switch</h3>
+    </div>
+    <!-- /.box-header -->
+    <!-- form start -->
+    <form class="form-horizontal" method="post" action="CreateSwitch">
+        <div class="box-body">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Name</label>
+                <div class="col-sm-10">
+                <input type="text" class="form-control" name="name" placeholder="Name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">IPv4 Address</label>
+                <div class="col-sm-10">
+                <input type="ipv4" class="form-control" name="ipv4" placeholder="IPv4" required pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Username</label>
+                <div class="col-sm-10">
+                <input type="text" class="form-control" name="username" placeholder="Username">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Password</label>
+                <div class="col-sm-10">
+                <input type="password" class="form-control" name="password" placeholder="Password">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Location</label>
+                <div class="col-sm-10">
+                <input type="text" class="form-control" name="location" placeholder="Location">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Model:</label>
+                <div class="col-sm-10">
+                    <select class="form-control" id="model" name="Model">
+                    @{ 
+                        foreach (var item in Model) {
+                            <option value=@item.Id>@item.Name</option>
+                        }
+                    }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer">
+        <button type="submit" class="btn btn-default">Cancel</button>
+        <button type="submit" class="btn btn-info pull-right">Create</button>
+        </div>
+        <!-- /.box-footer -->
+    </form>
+    </div>
+    <!-- /.box -->
+</section>
