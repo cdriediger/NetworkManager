@@ -38,69 +38,115 @@ namespace NetworkManager.Migrations
 
             modelBuilder.Entity("NetworkManager.Models.Ports", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Description");
+                    b.Property<string>("description");
 
-                    b.Property<string>("Name");
+                    b.Property<bool>("isUplink");
 
-                    b.Property<int>("PortId");
+                    b.Property<DateTime>("lastUpdate");
 
-                    b.Property<int>("SwitchId");
+                    b.Property<string>("lldpRemoteDeviceName");
 
-                    b.Property<int>("Vlan");
+                    b.Property<int>("name");
 
-                    b.HasKey("Id");
+                    b.Property<string>("state");
 
-                    b.HasIndex("SwitchId");
+                    b.Property<int>("switchId");
+
+                    b.Property<int>("vlan");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("switchId");
 
                     b.ToTable("Ports");
                 });
 
             modelBuilder.Entity("NetworkManager.Models.SwitchModels", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Driver");
+                    b.Property<string>("driver");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("name");
 
-                    b.Property<int>("PortCount");
+                    b.Property<int>("portCount");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("SwitchModels");
                 });
 
             modelBuilder.Entity("NetworkManager.Models.Switches", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("IPv4");
+                    b.Property<string>("ipv4");
 
-                    b.Property<string>("Location");
+                    b.Property<DateTime>("lastUpdate");
 
-                    b.Property<int>("Model");
+                    b.Property<string>("location");
 
-                    b.Property<string>("Name");
+                    b.Property<int>("model");
 
-                    b.Property<string>("Password");
+                    b.Property<string>("modelName");
 
-                    b.Property<string>("Username");
+                    b.Property<string>("name");
 
-                    b.HasKey("Id");
+                    b.Property<string>("password");
+
+                    b.Property<string>("username");
+
+                    b.HasKey("id");
 
                     b.ToTable("Switches");
+                });
+
+            modelBuilder.Entity("NetworkManager.Models.TaggedVlans", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("portId");
+
+                    b.Property<int>("vlanId");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("portId");
+
+                    b.ToTable("TaggedVlans");
+                });
+
+            modelBuilder.Entity("NetworkManager.Models.Vlans", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("name");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Vlans");
                 });
 
             modelBuilder.Entity("NetworkManager.Models.Ports", b =>
                 {
                     b.HasOne("NetworkManager.Models.Switches", "Switch")
-                        .WithMany("Ports")
-                        .HasForeignKey("SwitchId")
+                        .WithMany("ports")
+                        .HasForeignKey("switchId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("NetworkManager.Models.TaggedVlans", b =>
+                {
+                    b.HasOne("NetworkManager.Models.Ports", "port")
+                        .WithMany("taggedVlans")
+                        .HasForeignKey("portId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

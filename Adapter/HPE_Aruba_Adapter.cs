@@ -41,33 +41,84 @@ namespace NetworkManager.Adapters
             return vlanList;
         }
 
+        public Dictionary<int,string> GetAllPortStates()
+        {
+            var response = api.Query($"/rest/v3/ports");
+            var ports = JsonConvert.DeserializeObject<Ports>(response);
+            var stateList = new Dictionary<int, string>();
+            foreach (var port in ports.port_element)
+            {
+                if (port.is_port_up)
+                {
+                    stateList.Add(Int32.Parse(port.id), "Up");
+                }
+                else
+                {
+                    stateList.Add(Int32.Parse(port.id), "Down");
+                }
+            }
+            return stateList;
+        }
+        
         public String GetPortState(int portId)
         {
-            var response = api.Query($"/rest/v3/ports/{portId}");
-            var state = JsonConvert.DeserializeObject<Port>(response).is_port_up;
-            Console.WriteLine(response);
-            if (state)
-            {
-                return "Up";
+            var stateList = GetAllPortStates();
+            if (stateList.ContainsKey(portId))
+            {   
+                return stateList[portId];
             }
             else
             {
-                return "Down";
+                return "Unknown";
             }
+        }
+        
+        public Dictionary<int,int> GetAllPortVlans()
+        {
+            var response = api.Query($"/rest/v3/vlans-ports");
+            var vlan_port_elements = JsonConvert.DeserializeObject<VlansPorts>(response).vlan_port_element;
+            var vlansPorts = new Dictionary<int, int>();
+            foreach (var vlanPort in vlan_port_elements)
+            {
+                if (vlanPort.port_mode == "POM_UNTAGGED")
+                {
+                    vlansPorts.Add(Int32.Parse(vlanPort.port_id), vlanPort.vlan_id);
+                }
+                
+            }
+            return vlansPorts;
         }
         
         public int GetPortVlan(int portId)
         {
+            var vlansPorts = GetAllPortVlans();
+            if (vlansPorts.ContainsKey(portId))
+            {   
+                return vlansPorts[portId];
+            }
+            else
+            {
+                return 0;
+            }
+            
+        }
+
+        public List<int> GetPortTaggedVlans(int portId)
+        {
             var response = api.Query($"/rest/v3/vlans-ports");
             var vlan_port_elements = JsonConvert.DeserializeObject<VlansPorts>(response).vlan_port_element;
+            var taggedVlans = new List<int>();
             foreach (var vlanPort in vlan_port_elements)
             {
-                if (vlanPort.port_id == portId.ToString())
+                if (Int32.Parse(vlanPort.port_id) == portId)
                 {
-                    return vlanPort.vlan_id;
+                    if (vlanPort.port_mode == "POM_TAGGED_STATIC")
+                    {
+                        taggedVlans.Add(vlanPort.vlan_id);
+                    }
                 }
             }
-            return 0;
+            return taggedVlans;
         }
 
         public void SetPortVlan(int portId, int vlanId)
@@ -75,6 +126,18 @@ namespace NetworkManager.Adapters
             var url = $"/rest/v3/vlans-ports";
             var port = new PortVlan(portId, vlanId);
             api.Post(url, port);
+        }
+
+        public Dictionary<int, string> GetAllPortNames()
+        {
+            var response = api.Query($"/rest/v3/ports");
+            var ports = JsonConvert.DeserializeObject<Ports>(response);
+            var nameList = new Dictionary<int, string>();
+            foreach (var port in ports.port_element)
+            {
+                nameList.Add(Int32.Parse(port.id), port.name);
+            }
+            return nameList;
         }
 
         public string GetPortDescription(int portId)
@@ -147,6 +210,43 @@ namespace NetworkManager.Adapters
             return SystemInfo;
         }
 
+        public Dictionary<int, Dictionary<string, string>> GetAllLldpRemoteDevices()
+        {
+            var response = api.Query("/rest/v3/lldp/remote-device");
+            var lldpRemoteDevices = JsonConvert.DeserializeObject<LldpRemoteDevice>(response).lldp_remote_device_element;
+            var remoteDevices = new Dictionary<int, Dictionary<string, string>>();
+            foreach (var lldpRemoteDevice in lldpRemoteDevices)
+            {
+                var remoteDeviceInfo = new Dictionary<string, string>();
+                remoteDeviceInfo.Add("local_port", lldpRemoteDevice.local_port);
+                remoteDeviceInfo.Add("chassis_id", lldpRemoteDevice.chassis_id);
+                remoteDeviceInfo.Add("port_id", lldpRemoteDevice.port_id);
+                remoteDeviceInfo.Add("port_description", lldpRemoteDevice.port_description);
+                remoteDeviceInfo.Add("system_name", lldpRemoteDevice.system_name);
+                remoteDevices.Add(Int32.Parse(lldpRemoteDevice.local_port), remoteDeviceInfo);
+            }
+            return remoteDevices;
+        }
+
+        public Dictionary<string,string> GetLldpRemoteDevice(int portId)
+        {
+            var response = api.Query("/rest/v3/lldp/remote-device");
+            var lldpRemoteDevices = GetAllLldpRemoteDevices();
+            var remoteDeviceInfo = new Dictionary<string, string>();
+            foreach (var lldpRemoteDevice in lldpRemoteDevices)
+            {
+                if (lldpRemoteDevice.Key == portId)
+                {
+                    remoteDeviceInfo.Add("local_port", lldpRemoteDevice.Value["local_port"]);
+                    remoteDeviceInfo.Add("chassis_id", lldpRemoteDevice.Value["chassis_id"]);
+                    remoteDeviceInfo.Add("port_id", lldpRemoteDevice.Value["port_id"]);
+                    remoteDeviceInfo.Add("port_description", lldpRemoteDevice.Value["port_description"]);
+                    remoteDeviceInfo.Add("system_name", lldpRemoteDevice.Value["system_name"]);
+                }
+            }
+            return remoteDeviceInfo;
+        }
+
         public class System
         {
             public string uri { get; set; }
@@ -168,6 +268,12 @@ namespace NetworkManager.Adapters
             public Dictionary<string, string> base_ethernet_address { get; set; }
             public int total_memory_in_bytes { get; set; }
             public int total_poe_consumption { get; set; }
+        }
+
+        public class Ports
+        {
+            public Dictionary<string, int> collection_result { get; set; }
+            public List<Port> port_element { get; set; }
         }
 
         public class Port
@@ -249,6 +355,22 @@ namespace NetworkManager.Adapters
             {
                 this.location = location;
             }
+        }
+
+        public class LldpRemoteDevice
+        {
+            public Dictionary<string, int> collection_result { get; set; }
+            public List<LldpRemoteDeviceElement> lldp_remote_device_element {get; set;}
+        }
+
+        public class LldpRemoteDeviceElement
+        {
+            public string uri {get; set;}
+            public string local_port {get; set;}
+            public string chassis_id {get; set;}
+            public string port_id {get; set;}
+            public string port_description {get; set;}
+            public string system_name {get; set;}
         }
 
     }

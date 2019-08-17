@@ -9,20 +9,20 @@ namespace NetworkManager.Models
 {
     public partial class Switches
     {
+        //static data
         public int id { get; set; }
         public string ipv4 { get; set; }
         public string username { get; set; }
         public string password { get; set; }
         public int model { get; set; }
-
         public virtual ICollection<Ports> ports { get; set; }
 
-        [NotMapped]
-        public string location { get; set; }
-        [NotMapped]
+        //dymamic updated data
         public string name { get; set; }
-        [NotMapped]
+        public string location { get; set; }
         public string modelName {get; set;}
+        public DateTime lastUpdate {get; set;}
+        
         [NotMapped]
         public HPE_Aruba_Adapter adapter {get; set;}
 

@@ -1,4 +1,4 @@
-@model NetworkManager.Models.DetailsViewModel
+@model NetworkManager.Models.SwitchDetailsViewModel
 <section class="content-header">
     <h1>
     Switch @Model.sw.name
@@ -48,8 +48,10 @@
                 <th>ID</th>
                 <th>Name</th>
                 <th>VLAN ID</th>
+                <th>Tagged VLANs</th>
                 <th>VLAN Name</th>
                 <th>State</th>
+                <th>LLDP Remote Device</th>
                 <th>Action</th>
             </tr>
             </thead>
@@ -61,6 +63,16 @@
                         <td>@Html.DisplayFor(modelItem => port.name)</td>
                         <td><input type="text" class="form-control" name="description" placeholder="@port.description"></td>
                         <td>@Html.DisplayFor(modelItem => port.vlan)</td>
+                        @{
+                            var vlans = new List<string>();
+                            foreach (var vlan in port.taggedVlans)
+                            {
+                                vlans.Add(vlan.vlanId.ToString());
+                            }
+                            var vlansStr = String.Join(",", port.taggedVlans.ToList());
+                            Html.DisplayFor(modelItem => vlansStr);
+                        }
+                        <td>@vlansStr</td>
                         <td>
                             <select class="form-control" id="vlan" name="vlan">
                                 @foreach (KeyValuePair<int, string> vlan in Model.vlans) {
@@ -75,7 +87,15 @@
                                 }
                             </select>
                         </td>
-                        <td>@Html.DisplayFor(modelItem => port.state)</td>
+                        @if (port.state == "Up")
+                        {
+                            <td><font color="green">@Html.DisplayFor(modelItem => port.state)</font></td>
+                        }
+                        else
+                        {
+                            <td><font color="red">@Html.DisplayFor(modelItem => port.state)</font></td>
+                        }
+                        <td>@Html.DisplayFor(modelItem => port.lldpRemoteDeviceName)</td>
                         <td><button type="submit" class="btn btn-link">Apply</button></td>
                         <input type="hidden" name="id" value="@port.id"/>
                         </form>
