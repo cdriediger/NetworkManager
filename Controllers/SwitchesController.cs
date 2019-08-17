@@ -141,7 +141,7 @@ namespace NetworkManager
                     foreach (var vlanId in taggedVlans)
                     {
                         Console.WriteLine($"VLAN {vlanId} tagged on {port.name}");
-                        var vlan = new TaggedVlans(vlanId);
+                        var vlan = new Vlan(vlanId);
                         if (!(port.taggedVlans.Contains(vlan)))
                         {
                             port.taggedVlans.Add(vlan);
@@ -185,9 +185,7 @@ namespace NetworkManager
             else
             {
                 Console.WriteLine($"VLAN {id} not found in DB. Creating Vlan...");
-                var vlan = new Vlans();
-                vlan.id = id;
-                vlan.name = name;
+                var vlan = new Vlan(id, name);
                 db.Vlans.Add(vlan);
                 db.SaveChanges();
             }

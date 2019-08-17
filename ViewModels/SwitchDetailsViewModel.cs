@@ -8,7 +8,7 @@ namespace NetworkManager.Models
         public Switches sw {get; set;}
         public Dictionary<int, string> vlans {get; set;}
 
-        public SwitchDetailsViewModel(Switches sw, List<Vlans> vlans)
+        public SwitchDetailsViewModel(Switches sw, List<Vlan> vlans)
         {
             this.sw = sw;
             var vlanList = new Dictionary<int,string>();

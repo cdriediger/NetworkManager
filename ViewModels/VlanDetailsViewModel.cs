@@ -5,6 +5,6 @@ namespace NetworkManager.Models
 {
     public class VlanDetailsViewModel
     {
-        public Vlans vlan {get; set;}
+        public Vlan vlan {get; set;}
     }
 }

@@ -23,9 +23,9 @@ namespace NetworkManager
         }
         
         [HttpPost]
-        public ActionResult UpdateVlan(Vlans form)
+        public ActionResult UpdateVlan(Vlan form)
         {
-            Vlans vlan = db.Vlans.Where(v => v.id == form.id).First();
+            Vlan vlan = db.Vlans.Where(v => v.id == form.id).First();
             vlan.name = form.name;
             db.SaveChanges();
             return RedirectToAction("Index", "Vlans");

@@ -69,7 +69,7 @@
                             {
                                 vlans.Add(vlan.vlanId.ToString());
                             }
-                            var vlansStr = String.Join(",", port.taggedVlans.ToList());
+                            var vlansStr = String.Join(",", vlans);
                             Html.DisplayFor(modelItem => vlansStr);
                         }
                         <td>@vlansStr</td>
