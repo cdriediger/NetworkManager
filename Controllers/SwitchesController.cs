@@ -141,7 +141,7 @@ namespace NetworkManager
                     foreach (var vlanId in taggedVlans)
                     {
                         Console.WriteLine($"VLAN {vlanId} tagged on {port.name}");
-                        var vlan = new Vlan(vlanId);
+                        var vlan = new TaggedVlan(vlanId);
                         if (!(port.taggedVlans.Contains(vlan)))
                         {
                             port.taggedVlans.Add(vlan);

@@ -106,7 +106,7 @@ namespace NetworkManager.Migrations
                     b.ToTable("Switches");
                 });
 
-            modelBuilder.Entity("NetworkManager.Models.TaggedVlans", b =>
+            modelBuilder.Entity("NetworkManager.Models.TaggedVlan", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
@@ -119,15 +119,17 @@ namespace NetworkManager.Migrations
 
                     b.HasIndex("portId");
 
-                    b.ToTable("TaggedVlans");
+                    b.ToTable("TaggedVlan");
                 });
 
-            modelBuilder.Entity("NetworkManager.Models.Vlans", b =>
+            modelBuilder.Entity("NetworkManager.Models.Vlan", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("name");
+
+                    b.Property<int>("vlanId");
 
                     b.HasKey("id");
 
@@ -142,7 +144,7 @@ namespace NetworkManager.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("NetworkManager.Models.TaggedVlans", b =>
+            modelBuilder.Entity("NetworkManager.Models.TaggedVlan", b =>
                 {
                     b.HasOne("NetworkManager.Models.Ports", "port")
                         .WithMany("taggedVlans")

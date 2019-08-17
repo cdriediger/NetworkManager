@@ -29,7 +29,7 @@ namespace NetworkManager.Models
                 .HasOne<Switches>(s => s.Switch)
                 .WithMany(p => p.ports)
                 .HasForeignKey(s => s.switchId);
-            modelBuilder.Entity<Vlan>()
+            modelBuilder.Entity<TaggedVlan>()
                 .HasOne<Ports>(p => p.port)
                 .WithMany(v => v.taggedVlans)
                 .HasForeignKey(p => p.portId);

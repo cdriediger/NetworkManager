@@ -6,10 +6,6 @@ namespace NetworkManager.Models
         public int vlanId { get; set; }
         public string name { get; set; }
 
-        //relation data
-        public int portId { get; set; }
-        public virtual Ports port { get; set; }
-
         public Vlan(int vlanId, string name)
         {
             this.vlanId = vlanId;

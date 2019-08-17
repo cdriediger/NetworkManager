@@ -31,23 +31,23 @@ namespace NetworkManager.Models
         }
     }
 
-    public class TaggedVlans : ICollection<Vlan>
+    public partial class TaggedVlans : ICollection<TaggedVlan>
     {   
 
-        ICollection<Vlan> _items;
+        ICollection<TaggedVlan> _items;
 
 
         public TaggedVlans() {
             // Default to using a List<T>.
-            _items = new List<Vlan>();
+            _items = new List<TaggedVlan>();
         }
 
-        protected TaggedVlans(ICollection<Vlan> collection) {
+        protected TaggedVlans(ICollection<TaggedVlan> collection) {
             // Let derived classes specify the exact type of ICollection<T> to wrap.
             _items = collection;
         }
 
-        public void Add(Vlan item) { 
+        public void Add(TaggedVlan item) { 
             _items.Add(item); 
         }
 
@@ -55,8 +55,8 @@ namespace NetworkManager.Models
             _items.Clear(); 
         }
 
-        public bool Contains(Vlan item) { 
-            foreach (Vlan vlan in _items)
+        public bool Contains(TaggedVlan item) { 
+            foreach (TaggedVlan vlan in _items)
             {
                 if (vlan.vlanId == item.vlanId)
                 {
@@ -66,7 +66,7 @@ namespace NetworkManager.Models
             return false;
         }
 
-        public void CopyTo(Vlan[] array, int arrayIndex) { 
+        public void CopyTo(TaggedVlan[] array, int arrayIndex) { 
             _items.CopyTo(array, arrayIndex); 
         }
 
@@ -80,12 +80,12 @@ namespace NetworkManager.Models
             get { return false; }
         }
 
-        public bool Remove(Vlan item)
+        public bool Remove(TaggedVlan item)
         {
             return _items.Remove(item);
         }
 
-        public IEnumerator<Vlan> GetEnumerator()
+        public IEnumerator<TaggedVlan> GetEnumerator()
         {
             return _items.GetEnumerator();
         }
