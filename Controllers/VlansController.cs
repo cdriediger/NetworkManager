@@ -17,6 +17,19 @@ namespace NetworkManager
             return View(vlans);
         }
 
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult CreateVlan(Vlan vlan)
+        {
+            db.Vlans.Add(vlan);
+            db.SaveChanges();
+            return RedirectToAction("Index", "Vlans");
+        }
+
         public ActionResult Update(int id)
         {
             return View(db.Vlans.Where(v => v.id == id).First());

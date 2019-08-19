@@ -16,5 +16,9 @@ namespace NetworkManager.Models
         {
             this.vlanId = vlanId;
         }
+
+        public Vlan()
+        {
+        }
     }
 }

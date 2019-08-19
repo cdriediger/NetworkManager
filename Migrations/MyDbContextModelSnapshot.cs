@@ -64,6 +64,20 @@ namespace NetworkManager.Migrations
                     b.ToTable("Ports");
                 });
 
+            modelBuilder.Entity("NetworkManager.Models.Profile", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("name");
+
+                    b.Property<int>("nativeVlan");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Profiles");
+                });
+
             modelBuilder.Entity("NetworkManager.Models.SwitchModels", b =>
                 {
                     b.Property<int>("id")
@@ -111,11 +125,15 @@ namespace NetworkManager.Migrations
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int?>("Profileid");
+
                     b.Property<int>("portId");
 
                     b.Property<int>("vlanId");
 
                     b.HasKey("id");
+
+                    b.HasIndex("Profileid");
 
                     b.HasIndex("portId");
 
@@ -146,6 +164,10 @@ namespace NetworkManager.Migrations
 
             modelBuilder.Entity("NetworkManager.Models.TaggedVlan", b =>
                 {
+                    b.HasOne("NetworkManager.Models.Profile")
+                        .WithMany("taggedVlans")
+                        .HasForeignKey("Profileid");
+
                     b.HasOne("NetworkManager.Models.Ports", "port")
                         .WithMany("taggedVlans")
                         .HasForeignKey("portId")

@@ -40,5 +40,6 @@ namespace NetworkManager.Models
         public virtual DbSet<Ports> Ports { get; set; }
         public virtual DbSet<SwitchModels> SwitchModels { get; set; }
         public virtual DbSet<Vlan> Vlans { get; set; }
+        public virtual DbSet<Profile> Profiles { get; set; }
     }   
 }
