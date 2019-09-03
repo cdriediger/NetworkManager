@@ -1,4 +1,4 @@
-@model IEnumerable<NetworkManager.Models.Profile>
+@model NetworkManager.Models.ProfileIndexViewModel
 <section class="content-header">
     <h1>
     Profiles
@@ -22,13 +22,29 @@
             <thead>
             <tr>
                 <th>Name</th>
+                <th>native VLAN</th>
+                <th>tagged VLANs</th>
             </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model)
+                @foreach (var item in Model.Profiles)
                 {
                     <tr>
                     <td>@Html.DisplayFor(modelItem => item.name)</td>
+                    @{
+                        var nativeVlan = Model.Vlans[item.nativeVlan].vlanId;
+                    }
+                    <td>@Html.DisplayFor(modelItem => @nativeVlan)</td>
+                    @{
+                            var taggedVlans = new List<string>();
+                            foreach (var vlan in item.taggedVlans)
+                            {
+                                taggedVlans.Add(vlan.vlanId.ToString());
+                            }
+                            var vlansStr = String.Join(",", taggedVlans);
+                            Html.DisplayFor(modelItem => vlansStr);
+                        }
+                        <td>@vlansStr</td>
                     <td><a href="Profiles/Update/@item.id">Manage</a> | <a href="Profiles/Delete/@item.id" >Delete</a></td>
                     </tr>
                 }

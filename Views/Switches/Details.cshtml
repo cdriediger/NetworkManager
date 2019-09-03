@@ -50,6 +50,7 @@
                 <th>VLAN ID</th>
                 <th>Tagged VLANs</th>
                 <th>VLAN Name</th>
+                <th>Set Profile</th>
                 <th>State</th>
                 <th>LLDP Remote Device</th>
                 <th>Action</th>
@@ -83,6 +84,23 @@
                                     else
                                     {
                                         <option value="@vlan.Key">@vlan.Value</option>
+                                    }
+                                }
+                            </select>
+                        </td>
+                        <td>
+                            <select class="form-control" id="vlan" name="vlan">
+                                @foreach (KeyValuePair<int, string> profile in Model.profiles) {
+                                    if (!(port.profile == null))
+                                    {
+                                        if (profile.Key == port.profile.id)
+                                        {
+                                            <option selected value="@profile.Key">@profile.Value</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@profile.Key">@profile.Value</option>
+                                        }
                                     }
                                 }
                             </select>

@@ -5,18 +5,23 @@ namespace NetworkManager.Models
 {
     public class SwitchDetailsViewModel
     {
-        public Switches sw {get; set;}
-        public Dictionary<int, string> vlans {get; set;}
+        public Switches sw { get; set; }
+        public Dictionary<int, string> vlans { get; set; }
+        public Dictionary<int, string> profiles { get; set; }
 
-        public SwitchDetailsViewModel(Switches sw, List<Vlan> vlans)
+        public SwitchDetailsViewModel(Switches sw, List<Vlan> vlans, List<Profile> profiles)
         {
             this.sw = sw;
-            var vlanList = new Dictionary<int,string>();
+            this.vlans = new Dictionary<int,string>();
             foreach (var vlan in vlans)
             {
-                vlanList.Add(vlan.id, vlan.name);
+                this.vlans.Add(vlan.id, vlan.name);
             }
-            this.vlans = vlanList;
+            this.profiles = new Dictionary<int,string>();
+            foreach (var profile in profiles)
+            {
+                this.profiles.Add(profile.id, profile.name);
+            }
         }
     }
 }

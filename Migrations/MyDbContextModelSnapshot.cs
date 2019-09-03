@@ -51,6 +51,8 @@ namespace NetworkManager.Migrations
 
                     b.Property<int>("name");
 
+                    b.Property<int?>("profileid");
+
                     b.Property<string>("state");
 
                     b.Property<int>("switchId");
@@ -58,6 +60,8 @@ namespace NetworkManager.Migrations
                     b.Property<int>("vlan");
 
                     b.HasKey("id");
+
+                    b.HasIndex("profileid");
 
                     b.HasIndex("switchId");
 
@@ -125,19 +129,19 @@ namespace NetworkManager.Migrations
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("Profileid");
+                    b.Property<int?>("portId");
 
-                    b.Property<int>("portId");
+                    b.Property<int?>("profileId");
 
                     b.Property<int>("vlanId");
 
                     b.HasKey("id");
 
-                    b.HasIndex("Profileid");
-
                     b.HasIndex("portId");
 
-                    b.ToTable("TaggedVlan");
+                    b.HasIndex("profileId");
+
+                    b.ToTable("TaggedVlans");
                 });
 
             modelBuilder.Entity("NetworkManager.Models.Vlan", b =>
@@ -156,6 +160,10 @@ namespace NetworkManager.Migrations
 
             modelBuilder.Entity("NetworkManager.Models.Ports", b =>
                 {
+                    b.HasOne("NetworkManager.Models.Profile", "profile")
+                        .WithMany()
+                        .HasForeignKey("profileid");
+
                     b.HasOne("NetworkManager.Models.Switches", "Switch")
                         .WithMany("ports")
                         .HasForeignKey("switchId")
@@ -164,14 +172,13 @@ namespace NetworkManager.Migrations
 
             modelBuilder.Entity("NetworkManager.Models.TaggedVlan", b =>
                 {
-                    b.HasOne("NetworkManager.Models.Profile")
-                        .WithMany("taggedVlans")
-                        .HasForeignKey("Profileid");
-
                     b.HasOne("NetworkManager.Models.Ports", "port")
                         .WithMany("taggedVlans")
-                        .HasForeignKey("portId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("portId");
+
+                    b.HasOne("NetworkManager.Models.Profile", "profile")
+                        .WithMany("taggedVlans")
+                        .HasForeignKey("profileId");
                 });
 #pragma warning restore 612, 618
         }

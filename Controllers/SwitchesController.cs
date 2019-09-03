@@ -69,7 +69,8 @@ namespace NetworkManager
             var sw = db.Switches.Where(s => s.id == id).First();
             UpdateSwitchData(sw);
             var vlans = db.Vlans.ToList();
-            return View(new SwitchDetailsViewModel(sw, vlans));
+            var profiles = db.Profiles.ToList();
+            return View(new SwitchDetailsViewModel(sw, vlans, profiles));
         }
 
         public ActionResult Update(int id)
@@ -177,7 +178,7 @@ namespace NetworkManager
 
         public void CreateVlanIfNotExist(int id, string name)
         {
-            var result = db.Vlans.Where(v => v.id == id);
+            var result = db.Vlans.Where(v => v.vlanId == id);
             if (result.Count() == 1)
             {
                 Console.WriteLine($"VLAN {id} found. Name: {name}");

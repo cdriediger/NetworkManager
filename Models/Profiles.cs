@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace NetworkManager.Models
 {
     public partial class Profile
@@ -7,5 +10,12 @@ namespace NetworkManager.Models
 
         public int nativeVlan { get; set; }
         public virtual TaggedVlans taggedVlans { get; set; }
+
+        [NotMapped]
+        public List<int> TaggedVLanIds {get; set;}
+
+        //relation data
+        //public int portId { get; set; }
+        //public virtual Ports port { get; set; }
     }
 }
