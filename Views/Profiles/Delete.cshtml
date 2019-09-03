@@ -1,0 +1,33 @@
+@model NetworkManager.Models.Profile
+<section class="content-header">
+    <h1>
+    Profiles
+    </h1>
+</section>
+<!-- Main content -->
+<section class="content container-fluid">
+    <!-- Horizontal Form -->
+    <div class="box box-info">
+    <div class="box-header with-border">
+        <h3 class="box-title">Delete Profile @Model.name ?</h3>
+    </div>
+    <!-- /.box-header -->
+    <!-- form start -->
+    <form class="form-horizontal" method="post" action="/Profiles/DeleteProfile/@Model.id">
+        <div class="box-body">
+        <div class="form-group">
+            <label for="inputEmail3" class="col-sm-2 control-label">Name</label>
+            <div class="col-sm-10">
+            <input type="ipv4" class="form-control" name="ipv4" value="@Model.name" readonly>
+            </div>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer">
+        <button type="submit" class="btn btn-default">Cancel</button>
+        <button type="submit" class="btn btn-info">Delete</button>
+        </div>
+        <!-- /.box-footer -->
+    </form>
+    </div>
+    <!-- /.box -->
+</section>
