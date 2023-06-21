@@ -21,7 +21,7 @@
             <table id="example1" class="table table-bordered table-striped">
             <thead>
             <tr>
-                <th>Id</th>
+                <th>Vlan Id</th>
                 <th>Name</th>
             </tr>
             </thead>
@@ -29,7 +29,7 @@
                 @foreach (var item in Model)
                 {
                     <tr>
-                    <td>@Html.DisplayFor(modelItem => item.id)</td>
+                    <td>@Html.DisplayFor(modelItem => item.vlanId)</td>
                     <td>@Html.DisplayFor(modelItem => item.name)</td>
                     <td><a href="Vlans/Update/@item.id">Manage</a> | <a href="Vlans/Delete/@item.id" >Delete</a></td>
                     </tr>

@@ -16,6 +16,8 @@ namespace NetworkManager.Models
         public string password { get; set; }
         public int model { get; set; }
         public virtual ICollection<Ports> ports { get; set; }
+        public string adaptername {get; set;}
+        public bool active {get; set;}
 
         //dymamic updated data
         public string name { get; set; }
@@ -24,7 +26,7 @@ namespace NetworkManager.Models
         public DateTime lastUpdate {get; set;}
         
         [NotMapped]
-        public HPE_Aruba_Adapter adapter {get; set;}
+        public ISwitchAdapter adapter {get; set;}
 
         public Switches()
         {

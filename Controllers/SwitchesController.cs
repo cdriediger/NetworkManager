@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging.Debug;
 using NetworkManager.Adapters;
 using NetworkManager.Models;
 
+
 namespace NetworkManager
 {
     public class SwitchesController : Controller
@@ -13,7 +14,7 @@ namespace NetworkManager
 
         public ActionResult Index()
         {
-            var switches = db.Switches.ToList();
+            var switches = db.Switches.Where(s => s.active == true).ToList();
             foreach (var sw in switches) {
                 UpdateSwitchData(sw);
             }
@@ -29,12 +30,14 @@ namespace NetworkManager
         public ActionResult CreateSwitch(Switches sw)
         {
             var portCount = db.SwitchModels.Where(s => s.id == sw.model).First().portCount;
+            sw.adaptername = db.SwitchModels.Where(s => s.id == sw.model).First().adapter;
             for (var id = 1; id <= portCount; id++) {
                 var port = new Ports(){
                     name = id,
                     vlan = 1
                 };
                 sw.ports.Add(port);
+                sw.active = true;
             }
             db.Switches.Add(sw);
             db.SaveChanges();
@@ -50,15 +53,18 @@ namespace NetworkManager
         [HttpPost]
         public ActionResult DeleteSwitch(int id)
         {
+            Console.WriteLine($"Deleting Switch {id}");
             try
             {
                 Switches sw = db.Switches.Where(s => s.id == id).First();
+                Console.WriteLine($"Deleting Switch {sw.name}");
                 db.Switches.Remove(sw);
                 db.SaveChanges();
                 return RedirectToAction("Index", "Switches");
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
+                Console.WriteLine($"DB Error while deleting Switch {ex.Message} || {ex.InnerException}");
                 return RedirectToAction("Index", "Switches");
             }
             
@@ -120,6 +126,11 @@ namespace NetworkManager
             {
                 Console.WriteLine($"Updating Data of {sw.name}");
                 sw.adapter = new HPE_Aruba_Adapter(sw.ipv4, sw.username, sw.password);
+                if (!(sw.adapter.isConnected()))
+                {   
+                    Console.WriteLine($"Connection to {sw.name} failed");
+                    return;
+                }
                 sw.name = sw.adapter.GetSystemName();
                 sw.location = sw.adapter.GetLocation();
                 sw.lastUpdate = DateTime.Now;

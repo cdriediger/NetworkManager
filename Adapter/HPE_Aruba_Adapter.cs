@@ -7,15 +7,16 @@ using RestSharp;
 
 namespace NetworkManager.Adapters
 {
-    public class HPE_Aruba_Adapter
+    public class HPE_Aruba_Adapter : ISwitchAdapter
     {
         private ArubaapiHelper api;
+        public bool connected {get; }
 
         public HPE_Aruba_Adapter(String ipAddress, String username, String password)
         {
             Console.WriteLine(String.Format("Creating new HPE_Aruba_Adapater. IpAddress: {0}, Username: {1}, Password {2}", ipAddress, username, password));
             api = new ArubaapiHelper(ipAddress, username, password);
-            var connected = api.Connect();
+            connected = api.Connect();
             Console.WriteLine(String.Format("Connected?: {0}", connected));
         }
 
@@ -217,6 +218,10 @@ namespace NetworkManager.Adapters
             var remoteDevices = new Dictionary<int, Dictionary<string, string>>();
             foreach (var lldpRemoteDevice in lldpRemoteDevices)
             {
+                if (remoteDevices.ContainsKey(Int32.Parse(lldpRemoteDevice.local_port)))
+                {
+                    continue;
+                }
                 var remoteDeviceInfo = new Dictionary<string, string>();
                 remoteDeviceInfo.Add("local_port", lldpRemoteDevice.local_port);
                 remoteDeviceInfo.Add("chassis_id", lldpRemoteDevice.chassis_id);
@@ -414,8 +419,14 @@ namespace NetworkManager.Adapters
             var loginJson = String.Format("{0}\"userName\":\"{1}\", \"password\":\"{2}\"{3}", "{", username, password, "}");
             Console.WriteLine($"Login: JSON Data: {loginJson}");
             loginrequest.AddParameter("application/json", loginJson, ParameterType.RequestBody);
+            loginrequest.Timeout = 200;
 
             IRestResponse response = restClient.Execute(loginrequest);
+            Console.WriteLine(String.Format("ResponseStatus: {0}", response.ResponseStatus));
+            if (response.ResponseStatus == ResponseStatus.TimedOut | response.ResponseStatus == ResponseStatus.TimedOut | response.ResponseStatus == ResponseStatus.Error)
+            {
+                return false;
+            }
             Console.WriteLine(String.Format("Token: {0}", response.Content));
             if (response.Content.StartsWith("<HTML>"))
             {

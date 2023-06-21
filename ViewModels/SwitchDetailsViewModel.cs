@@ -15,7 +15,7 @@ namespace NetworkManager.Models
             this.vlans = new Dictionary<int,string>();
             foreach (var vlan in vlans)
             {
-                this.vlans.Add(vlan.id, vlan.name);
+                this.vlans.Add(vlan.vlanId, vlan.name);
             }
             this.profiles = new Dictionary<int,string>();
             foreach (var profile in profiles)
